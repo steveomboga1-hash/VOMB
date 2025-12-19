@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ===========================================
+       Charlann Tailors - Full Website (Single File)
+       Features:
+         - Modern responsive layout
+         - WhatsApp booking (choose number)
+         - Video showcase (local or remote)
+         - Gallery with lightbox
+         - Testimonials, FAQ, Team
+         - Contact, map, opening hours
+         - Accessibility hints & SEO meta
+         - JS: validation, whatsapp message builder, localStorage save, analytics stub
+       Save as: index.html
+       Place optional tailoring.mp4 in same folder for local video playback
+     =========================================== -->
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Charlann Tailors — Kebirigo Market, Nyamira County</title>
+  <meta name="description" content="Charlann Tailors — Bespoke tailoring, alterations and embroidery in Nyamira County (Kebirigo Market). Book fittings and chat on WhatsApp." />
+  <meta name="author" content="Charlann Tailors" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph / Social -->
+  <meta property="og:title" content="Charlann Tailors — Bespoke Tailoring in Nyamira County" />
+  <meta property="og:description" content="Book a custom suit, bridal gown or alteration. Quick WhatsApp bookings." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1200&q=70" />
+  <meta property="og:type" content="website" />
+
+  <!-- Simple structured data -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"LocalBusiness",
+    "name":"Charlann Tailors",
+    "image":"https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1200&q=70",
+    "telephone":["+254723814911","+254710825908"],
+    "address":{
+      "@type":"PostalAddress",
+      "streetAddress":"Kebirigo Market",
+      "addressLocality":"Nyamira",
+      "addressRegion":"Nyamira County",
+      "addressCountry":"KE"
+    },
+    "openingHours":"Mo-Sa 08:00-18:00",
+    "email":"mailto:charlanntailors@gmail.com",
+    "url": window?.location?.href || "https://example.com"
+  }
+  </script>
+
+  <!-- ======================
+       STYLES (self-contained)
+       ====================== -->
+  <style>
+    /* -------------------------
+       Root variables for theme
+       ------------------------- */
+    :root{
+      --navy: #0f172a;
+      --gold: #d4af37;
+      --muted: #6b7280;
+      --bg: #fbfaf9;
+      --card: #ffffff;
+      --glass: rgba(255,255,255,0.9);
+      --radius: 14px;
+      --shadow-lg: 0 14px 45px rgba(2,6,23,0.12);
+      --max-width: 1100px;
+      --accent-text: #0f172a;
+      --success: #16a34a;
+      --danger: #dc2626;
+    }
+
+    /* -------------------------
+       Reset + base
+       ------------------------- */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      color:var(--accent-text);
+      background: linear-gradient(180deg, var(--bg) 0%, #ffffff 100%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
+      scroll-behavior:smooth;
+    }
+    a{color:inherit}
+    img{max-width:100%;display:block}
+
+    /* -------------------------
+       Container utilities
+       ------------------------- */
+    .wrap{max-width:var(--max-width);margin:0 auto;padding:20px}
+    .center{text-align:center}
+    .muted{color:var(--muted)}
+
+    /* -------------------------
+       HEADER / NAV
+       ------------------------- */
+    header.site-header{
+      position:sticky;top:0;z-index:60;
+      background:linear-gradient(90deg,var(--navy), rgba(15,23,42,0.95));
+      color:white;
+      box-shadow:0 6px 20px rgba(2,6,23,0.18);
+      backdrop-filter: blur(6px);
+    }
+    .nav-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:var(--max-width);margin:0 auto;padding:12px 18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:56px;height:56px;border-radius:12px;
+      background:linear-gradient(135deg,var(--gold), #f3c86a);
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);
+      box-shadow:0 8px 28px rgba(212,175,55,0.14);
+    }
+    .brand h1{margin:0;font-size:18px;line-height:1;color:#fff}
+    .brand p{margin:0;font-size:12px;color:rgba(255,255,255,0.9)}
+
+    nav.main-nav{display:flex;gap:12px;align-items:center}
+    nav.main-nav a{
+      color:rgba(255,255,255,0.95);
+      text-decoration:none;
+      padding:8px 10px;
+      border-radius:8px;
+      font-weight:600;
+      font-size:14px;
+    }
+    nav.main-nav a:hover{background:rgba(255,255,255,0.06);color:var(--gold)}
+    .cta-quick{background:var(--gold);color:var(--navy);padding:8px 12px;border-radius:9px;font-weight:800;text-decoration:none}
+
+    /* -------------------------
+       HERO
+       ------------------------- */
+    .hero{display:grid;grid-template-columns:1fr;gap:18px;padding:32px 10px}
+    .hero-inner{max-width:var(--max-width);margin:10px auto;display:grid;grid-template-columns:1fr;gap:18px;align-items:center;padding:30px}
+    .hero-card{
+      display:flex;flex-direction:column;gap:18px;padding:32px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));box-shadow:var(--shadow-lg)
+    }
+    .eyebrow{display:inline-block;padding:6px 12px;border-radius:999px;background:rgba(15,23,42,0.04);font-weight:700;color:var(--muted);font-size:13px}
+    h2.hero-title{font-family:'Playfair Display', serif;font-size:36px;margin:6px 0;color:var(--navy)}
+    p.lead{color:var(--muted);font-size:16px;margin:0}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{
+      display:inline-block;padding:12px 18px;border-radius:12px;text-decoration:none;font-weight:800;cursor:pointer;
+      border:0;transition:transform .12s ease, box-shadow .12s ease;
+    }
+    .btn-primary{background:var(--navy);color:white;box-shadow:0 10px 30px rgba(15,23,42,0.12)}
+    .btn-secondary{background:transparent;border:2px solid var(--navy);color:var(--navy)}
+    .btn:active{transform:translateY(1px)}
+    .promo-pill{padding:10px 14px;border-radius:12px;background:white;box-shadow:0 8px 30px rgba(2,6,23,0.06);font-weight:700}
+
+    .hero-media{display:none}
+    .visual-wrap{border-radius:12px;overflow:hidden;height:320px}
+
+    /* -------------------------
+       SECTIONS
+       ------------------------- */
+    section.site-section{padding:40px 12px}
+    .section-head{max-width:var(--max-width);margin:0 auto 18px;text-align:center}
+    .section-head h3{font-family:'Playfair Display', serif;font-size:24px;margin:0;color:var(--navy)}
+    .section-head p{margin:8px 0 0;color:var(--muted)}
+
+    /* -------------------------
+       SERVICES GRID
+       ------------------------- */
+    .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;max-width:var(--max-width);margin:18px auto}
+    .service-card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.06);transition:transform .18s, box-shadow .18s}
+    .service-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(2,6,23,0.09)}
+    .service-card h4{margin:6px 0;color:var(--navy)}
+    .service-card p{margin:0;color:var(--muted)}
+
+    /* -------------------------
+       GALLERY
+       ------------------------- */
+    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:var(--max-width);margin:18px auto}
+    .gallery-grid img{width:100%;height:160px;object-fit:cover;border-radius:10px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
+    .gallery-grid img:hover{transform:scale(1.04);box-shadow:0 16px 40px rgba(2,6,23,0.12)}
+
+    /* -------------------------
+       PRICING
+       ------------------------- */
+    .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;max-width:var(--max-width);margin:18px auto}
+    .price-card{background:var(--card);padding:20px;border-radius:12px;box-shadow:var(--shadow-lg);text-align:center;transition:transform .18s}
+    .price-card.pop{border:2px solid var(--gold);transform:scale(1.02)}
+    .price-card h4{margin:8px 0}
+    .price-value{font-weight:800;font-size:20px;margin:8px 0;color:var(--navy)}
+
+    /* -------------------------
+       VIDEO SHOWCASE
+       ------------------------- */
+    .video-wrap{display:flex;justify-content:center}
+    video.showcase{width:90%;border-radius:12px;box-shadow:0 10px 40px rgba(2,6,23,0.12)}
+
+    /* -------------------------
+       TESTIMONIALS / FAQ
+       ------------------------- */
+    .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;max-width:var(--max-width);margin:18px auto}
+    .testimonial{background:linear-gradient(180deg,#fff,#fff);padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.06)}
+    .testimonial p{margin:8px 0;color:var(--muted)}
+    .testimonial cite{display:block;margin-top:8px;font-weight:700;color:var(--navy)}
+
+    .faq-item{max-width:var(--max-width);margin:12px auto;padding:12px;border-radius:10px;background:var(--card);box-shadow:0 8px 30px rgba(2,6,23,0.04)}
+    .faq-question{display:flex;justify-content:space-between;cursor:pointer;padding:12px}
+    .faq-answer{padding:0 12px 12px;display:none;color:var(--muted)}
+
+    /* -------------------------
+       BOOKING FORM
+       ------------------------- */
+    .booking-wrap{max-width:840px;margin:18px auto;background:var(--card);padding:20px;border-radius:12px;box-shadow:var(--shadow-lg)}
+    .booking-grid{display:grid;grid-template-columns:1fr 320px;gap:18px}
+    .booking-left input,.booking-left select,.booking-left textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #e6e9ee;margin-bottom:10px}
+    .booking-left label{font-weight:700;margin-bottom:6px;display:block}
+    .booking-actions{display:flex;gap:12px;align-items:center;margin-top:6px}
+    .small-muted{font-size:13px;color:var(--muted)}
+
+    /* -------------------------
+       CONTACT / MAP
+       ------------------------- */
+    .contact-grid{display:grid;grid-template-columns:1fr 360px;gap:18px;max-width:var(--max-width);margin:18px auto}
+    .contact-card{background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow-lg)}
+    .contact-card p{margin:8px 0;color:var(--muted)}
+    iframe.map{width:100%;height:240px;border:0;border-radius:10px}
+
+    /* -------------------------
+       FOOTER
+       ------------------------- */
+    footer.site-footer{background:var(--navy);color:white;padding:22px;margin-top:34px}
+    .footer-inner{max-width:var(--max-width);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .social-links a{margin-left:8px;color:var(--gold);text-decoration:none;font-weight:700}
+
+    /* -------------------------
+       LIGHTBOX
+       ------------------------- */
+    .lightbox{position:fixed;inset:0;background:rgba(2,6,23,0.8);display:flex;align-items:center;justify-content:center;z-index:90;padding:20px;opacity:0;pointer-events:none;transition:opacity .18s}
+    .lightbox.open{opacity:1;pointer-events:auto}
+    .lightbox img{max-width:96%;max-height:86%;border-radius:10px;box-shadow:0 20px 60px rgba(2,6,23,0.6)}
+
+    /* -------------------------
+       Responsiveness tweaks
+       ------------------------- */
+    @media(min-width:980px){
+      .hero-inner{grid-template-columns:1fr 420px}
+      .hero-media{display:block}
+      .visual-wrap{height:420px}
+    }
+    @media(max-width:920px){
+      .booking-grid{grid-template-columns:1fr}
+      .contact-grid{grid-template-columns:1fr}
+      .gallery-grid img{height:140px}
+    }
+
+    /* small helpers */
+    .hidden{display:none}
+    .sr-only{position:absolute;left:-10000px}
+  </style>
+
+</head>
+<body>
+
+  <!-- HEADER / NAV -->
+  <header class="site-header" role="banner">
+    <div class="nav-bar">
+      <div class="brand" aria-label="Charlann Tailors brand">
+        <div class="logo" aria-hidden="true">
+          <!-- simple emblem: scissors + C letter -->
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" fill="transparent" stroke="#0f172a" stroke-width="1"/>
+            <path d="M7 7L17 17" stroke="#0f172a" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M7 17L17 7" stroke="#0f172a" stroke-width="1.4" stroke-linecap="round"/>
+            <text x="4.5" y="18.2" font-family="serif" font-size="7" fill="#0f172a">C</text>
+          </svg>
+        </div>
+        <div>
+          <h1>Charlann Tailors</h1>
+          <p class="muted">Nyamira County · Kebirigo Market</p>
+        </div>
+      </div>
+
+      <nav class="main-nav" role="navigation" aria-label="Main">
+        <a href="#services">Services</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#showcase">Showcase</a>
+        <a href="#booking">Book</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div style="display:flex;gap:12px;align-items:center">
+        <a class="cta-quick" href="https://wa.me/254723814911" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="small-muted" href="tel:+254723814911">0723 814 911</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero site-section" aria-labelledby="hero-heading">
+      <div class="hero-inner wrap">
+        <div class="hero-card" role="region" aria-label="Intro">
+          <span class="eyebrow">Made-to-measure • Alterations • Embroidery</span>
+          <h2 class="hero-title" id="hero-heading">Tailoring that fits your story.</h2>
+          <p class="lead">Charlann Tailors — bespoke suits, bridal gowns and precise alterations in Nyamira County. Premium fabrics, friendly service.</p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#booking" id="cta-book">Book a Fitting</a>
+            <a class="btn btn-secondary" href="https://wa.me/254723814911" target="_blank" rel="noopener">Chat on WhatsApp</a>
+            <span class="promo-pill">Free first measurement — this month</span>
+          </div>
+
+          <div class="muted" style="margin-top:10px">Opening: <strong>Mon – Sat</strong> • 8:30am – 6:00pm</div>
+        </div>
+
+        <div class="hero-media visual-wrap" aria-hidden="true">
+          <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1200&q=70" alt="Tailor working with fabric">
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="site-section" aria-labelledby="services-head">
+      <div class="section-head">
+        <h3 id="services-head">Our Services</h3>
+        <p class="muted">From full bespoke suites to express alterations — high quality finishes every time.</p>
+      </div>
+
+      <div class="services-grid wrap" role="list">
+        <article class="service-card" role="listitem" aria-labelledby="svc-1">
+          <h4 id="svc-1">Custom Suits</h4>
+          <p>Made-to-measure suits with premium linings and 3 fittings included. Your style, your fit.</p>
+        </article>
+
+        <article class="service-card" role="listitem" aria-labelledby="svc-2">
+          <h4 id="svc-2">Bridal & Special Occasion</h4>
+          <p>Consultation, sketches and custom fittings to make your day unforgettable.</p>
+        </article>
+
+        <article class="service-card" role="listitem" aria-labelledby="svc-3">
+          <h4 id="svc-3">Alterations & Repairs</h4>
+          <p>Hems, zippers, resizing, patches and express services.</p>
+        </article>
+
+        <article class="service-card" role="listitem" aria-labelledby="svc-4">
+          <h4 id="svc-4">Embroidery & Monogram</h4>
+          <p>Initials, corporate logos, and bespoke trim to personalize your garments.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" class="site-section" aria-labelledby="gallery-head">
+      <div class="section-head">
+        <h3 id="gallery-head">Gallery</h3>
+        <p class="muted">Hand-picked shots from recent work — click to enlarge.</p>
+      </div>
+
+      <div class="gallery-grid wrap" id="gallery-grid" aria-live="polite">
+        <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=900&q=70" alt="Tailored suit" data-large="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1600&q=80">
+        <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=70" alt="Dressmaking" data-large="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=1600&q=80">
+        <img src="https://images.unsplash.com/photo-1520975921830-3a6e0b0f7c7b?auto=format&fit=crop&w=900&q=70" alt="Fabric selection" data-large="https://images.unsplash.com/photo-1520975921830-3a6e0b0f7c7b?auto=format&fit=crop&w=1600&q=80">
+        <img src="https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&w=900&q=70" alt="Workshop" data-large="https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&w=1600&q=80">
+        <img src="https://images.unsplash.com/photo-1548198171-77ed9b6f3b5e?auto=format&fit=crop&w=900&q=70" alt="Stitching detail" data-large="https://images.unsplash.com/photo-1548198171-77ed9b6f3b5e?auto=format&fit=crop&w=1600&q=80">
+        <img src="https://images.unsplash.com/photo-1520975910317-3d045b1a1bb2?auto=format&fit=crop&w=900&q=70" alt="Finished suit" data-large="https://images.unsplash.com/photo-1520975910317-3d045b1a1bb2?auto=format&fit=crop&w=1600&q=80">
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="site-section" aria-labelledby="pricing-head">
+      <div class="section-head">
+        <h3 id="pricing-head">Pricing & Packages</h3>
+        <p class="muted">Starting prices for common services. Final quotes depend on fabric and custom details.</p>
+      </div>
+
+      <div class="pricing-grid wrap" role="list">
+        <div class="price-card pop" role="listitem" aria-labelledby="p-1">
+          <h4 id="p-1">Bespoke Suit</h4>
+          <div class="price-value">KSh 8,000+</div>
+          <p class="muted">Premium fabrics, 3 fittings, complimentary pocket square.</p>
+          <div style="margin-top:12px"><a class="btn btn-primary" href="#booking" onclick="prefillBooking('Bespoke Suit • KSh 8,000+')">Book</a></div>
+        </div>
+
+        <div class="price-card" role="listitem" aria-labelledby="p-2">
+          <h4 id="p-2">Bridal / Wedding</h4>
+          <div class="price-value">Custom Quote</div>
+          <p class="muted">Consultation and multiple fittings; event-day alterations available.</p>
+          <div style="margin-top:12px"><a class="btn btn-primary" href="#booking" onclick="prefillBooking('Bridal / Wedding • Custom Quote')">Book</a></div>
+        </div>
+
+        <div class="price-card" role="listitem" aria-labelledby="p-3">
+          <h4 id="p-3">Alterations</h4>
+          <div class="price-value">KSh 500+</div>
+          <p class="muted">Hems, resizing, zipper repair and express options.</p>
+          <div style="margin-top:12px"><a class="btn btn-primary" href="#booking" onclick="prefillBooking('Alterations • Starting KSh 500')">Book</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIDEO SHOWCASE -->
+    <section id="showcase" class="site-section" aria-labelledby="showcase-head">
+      <div class="section-head">
+        <h3 id="showcase-head">See Us in Action</h3>
+        <p class="muted">A quick behind-the-scenes look at Charlann Tailors' process — watch the craftsmanship.</p>
+      </div>
+
+      <div class="video-wrap">
+        <!--
+          Two ways to provide the video:
+          1) Local file named tailoring.mp4 (place it in same folder)
+          2) Remote URL (YouTube embed or hosted MP4)
+        -->
+        <video class="showcase" autoplay muted loop playsinline controls>
+          <source src="tailoring.mp4" type="video/mp4">
+          <!-- Fallback: remote sample video -->
+          <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+          Your browser does not support HTML5 video. You can still contact us on WhatsApp.
+        </video>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="site-section" aria-labelledby="testmon-head">
+      <div class="section-head">
+        <h3 id="testmon-head">What Our Clients Say</h3>
+        <p class="muted">Real feedback from valued clients.</p>
+      </div>
+
+      <div class="testimonials-grid wrap" role="list">
+        <blockquote class="testimonial" role="listitem">
+          <p>“Charlann Tailors made my wedding suit perfectly. Everyone loved it!”</p>
+          <cite>— Brian O.</cite>
+        </blockquote>
+
+        <blockquote class="testimonial" role="listitem">
+          <p>“Fast, professional, and stylish. My dress was ready in just 5 days.”</p>
+          <cite>— Mary A.</cite>
+        </blockquote>
+
+        <blockquote class="testimonial" role="listitem">
+          <p>“The best tailoring shop in Nyamira! Highly recommended.”</p>
+          <cite>— Janet K.</cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="site-section" aria-labelledby="faq-head">
+      <div class="section-head">
+        <h3 id="faq-head">Frequently Asked Questions</h3>
+        <p class="muted">Short answers to common questions.</p>
+      </div>
+
+      <div class="faq-item" aria-hidden="false">
+        <div class="faq-question" onclick="toggleFAQ(this)" role="button" aria-expanded="false">
+          <strong>How long does a bespoke suit take?</strong>
+          <span class="muted">+</span>
+        </div>
+        <div class="faq-answer">Typically 2–3 weeks depending on fabric and fittings. Express services are available for an extra fee.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)" role="button" aria-expanded="false">
+          <strong>Do you provide fabric consultations?</strong>
+          <span class="muted">+</span>
+        </div>
+        <div class="faq-answer">Yes — we help choose fabric weight, color and lining to suit your design and budget.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)" role="button" aria-expanded="false">
+          <strong>Can you deliver outside Nyamira?</strong>
+          <span class="muted">+</span>
+        </div>
+        <div class="faq-answer">We arrange courier delivery for a small fee; ask for a quote when booking.</div>
+      </div>
+    </section>
+
+    <!-- BOOKING -->
+    <section id="booking" class="site-section" aria-labelledby="booking-head">
+      <div class="section-head">
+        <h3 id="booking-head">Book a Fitting</h3>
+        <p class="muted">Choose a service, pick a date and send your request via WhatsApp — or send it directly from the form.</p>
+      </div>
+
+      <div class="booking-wrap wrap" role="region" aria-label="Booking form region">
+        <form id="booking-form" class="booking-left" autocomplete="off" novalidate>
+          <!-- Name -->
+          <label for="b-name">Full Name</label>
+          <input id="b-name" name="name" type="text" placeholder="Your full name" required aria-required="true">
+
+          <!-- Phone -->
+          <label for="b-phone">Phone / WhatsApp number</label>
+          <input id="b-phone" name="phone" type="tel" placeholder="+2547xxxxxxxx" required aria-required="true">
+
+          <!-- Service -->
+          <label for="b-service">Service</label>
+          <select id="b-service" name="service" required aria-required="true">
+            <option>Bespoke Suit</option>
+            <option>Bridal / Wedding</option>
+            <option>Alterations</option>
+            <option>Embroidery</option>
+            <option>Other (describe below)</option>
+          </select>
+
+          <!-- Date -->
+          <label for="b-date">Preferred date</label>
+          <input id="b-date" name="date" type="date">
+
+          <!-- Notes -->
+          <label for="b-note">Notes (measurements, fabric preference, special requests)</label>
+          <textarea id="b-note" name="note" placeholder="Add any details here" rows="4"></textarea>
+
+          <!-- Which WhatsApp number -->
+          <label for="b-target">Send booking to</label>
+          <select id="b-target" name="target">
+            <option value="254723814911">0723814911</option>
+            <option value="254710825908">0710825908</option>
+          </select>
+
+          <div class="booking-actions" style="margin-top:12px">
+            <button type="submit" class="btn btn-primary" id="booking-submit">Send via WhatsApp</button>
+            <a id="booking-whatsapp" class="btn btn-secondary" href="#" target="_blank" rel="noopener">Open WhatsApp (preview)</a>
+            <div class="small-muted">We reply within 24 hours to confirm your slot.</div>
+          </div>
+
+          <div id="booking-status" class="small-muted" style="margin-top:10px" aria-live="polite"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TEAM (optional decorative) -->
+    <section id="team" class="site-section" aria-labelledby="team-head">
+      <div class="section-head">
+        <h3 id="team-head">Meet the Team</h3>
+        <p class="muted">Craftspeople behind your garments.</p>
+      </div>
+
+      <div class="pricing-grid wrap" style="max-width:var(--max-width)">
+        <div class="card">
+          <h4>Head Tailor — Steve</h4>
+          <p class="muted">Lead designer and fittings specialist with 10+ years experience. (That's you!)</p>
+        </div>
+        <div class="card">
+          <h4>Seamstress — Mary</h4>
+          <p class="muted">Expert in bridal wear and delicate finishes.</p>
+        </div>
+        <div class="card">
+          <h4>Alterations — John</h4>
+          <p class="muted">Quick alteration specialist and repairs.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="site-section" aria-labelledby="contact-head">
+      <div class="section-head">
+        <h3 id="contact-head">Contact & Visit</h3>
+        <p class="muted">Drop by our shop or send your enquiry by phone or WhatsApp.</p>
+      </div>
+
+      <div class="contact-grid wrap">
+        <div class="contact-card" aria-labelledby="contact-card-heading">
+          <h4 id="contact-card-heading">Charlann Tailors</h4>
+          <p><strong>Location:</strong> Kebirigo Market, Nyamira County</p>
+          <p><strong>Phone (Call):</strong> <a href="tel:+254723814911">0723 814 911</a> / <a href="tel:+254710825908">0710 825 908</a></p>
+          <p><strong>WhatsApp:</strong> <a href="https://wa.me/254723814911" target="_blank" rel="noopener">Chat 0723 814 911</a></p>
+          <p><strong>Email:</strong> <a href="mailto:charlanntailors@gmail.com">charlanntailors@gmail.com</a></p>
+          <p class="muted">Opening Hours: Mon – Sat • 8:00 AM – 6:00 PM</p>
+
+          <div style="margin-top:8px">
+            <strong>Follow:</strong>
+            <span class="muted"> </span>
+            <a href="#" class="muted">Instagram</a> |
+            <a href="#" class="muted">Facebook</a> |
+            <a href="#" class="muted">TikTok</a>
+          </div>
+        </div>
+
+        <div class="contact-card">
+          <h4>Find us on the map</h4>
+          <iframe class="map" title="Kebirigo Market map"
+            src="https://www.google.com/maps?q=Kebirigo%20Market%20Nyamira&output=embed" loading="lazy"></iframe>
+          <div style="margin-top:10px; text-align:center">
+            <a class="btn btn-primary" href="https://www.google.com/maps/search/?api=1&query=Kebirigo+Market+Nyamira+County" target="_blank" rel="noopener">Open in Maps</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-hidden="true" onclick="closeLightbox()">
+    <img id="lightbox-img" alt="Enlarged gallery image">
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner wrap">
+      <div>
+        <div style="font-weight:700">Charlann Tailors</div>
+        <div class="muted" style="font-size:13px">Kebirigo Market • Nyamira County</div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center">
+        <a class="btn btn-primary" href="https://wa.me/254723814911" target="_blank" rel="noopener">WhatsApp</a>
+        <a style="color:var(--gold);text-decoration:none;font-weight:700" href="mailto:charlanntailors@gmail.com">charlanntailors@gmail.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===========================
+       JAVASCRIPT: behavior & helpers
+       =========================== -->
+  <script>
+    /************************************************************************
+     * Utility & Initialization
+     ************************************************************************/
+    (function(){
+      // tiny helper for query
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+      // DOM ready
+      document.addEventListener('DOMContentLoaded', () => {
+        initGallery();
+        initBookingForm();
+        initFAQ();
+        restoreDraft();
+        fadeInSections();
+      });
+
+      /**********************************************************************
+       * Gallery / Lightbox
+       **********************************************************************/
+      function initGallery(){
+        const grid = document.getElementById('gallery-grid');
+        if(!grid) return;
+        grid.addEventListener('click', (e)=>{
+          const t = e.target;
+          if(t && t.tagName === 'IMG'){
+            const src = t.dataset.large || t.src;
+            openLightbox(src, t.alt || 'Gallery image');
+          }
+        });
+      }
+
+      function openLightbox(src, alt){
+        const lb = document.getElementById('lightbox');
+        const img = document.getElementById('lightbox-img');
+        img.src = src;
+        img.alt = alt;
+        lb.classList.add('open');
+        lb.setAttribute('aria-hidden','false');
+        // allow ESC to close
+        document.addEventListener('keyup', lightboxKey);
+      }
+      function closeLightbox(){
+        const lb = document.getElementById('lightbox');
+        const img = document.getElementById('lightbox-img');
+        lb.classList.remove('open');
+        lb.setAttribute('aria-hidden','true');
+        img.src = '';
+        document.removeEventListener('keyup', lightboxKey);
+      }
+      function lightboxKey(e){
+        if(e.key === 'Escape') closeLightbox();
+      }
+
+      /**********************************************************************
+       * Booking form: build whatsapp message and open chat
+       **********************************************************************/
+      function initBookingForm(){
+        const form = document.getElementById('booking-form');
+        const whatsappLink = document.getElementById('booking-whatsapp');
+        const submitBtn = document.getElementById('booking-submit');
+        const status = document.getElementById('booking-status');
+
+        if(!form) return;
+
+        // update preview whatsapp link as user types
+        ['b-name','b-phone','b-service','b-date','b-note','b-target'].forEach(id=>{
+          const el = document.getElementById(id);
+          if(el) el.addEventListener('input', ()=> updatePreviewLink());
+        });
+
+        // initial preview
+        updatePreviewLink();
+
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          status.textContent = ''; // clear
+
+          const name = document.getElementById('b-name').value.trim();
+          const phoneValue = document.getElementById('b-phone').value.trim();
+          const service = document.getElementById('b-service').value;
+          const date = document.getElementById('b-date').value;
+          const note = document.getElementById('b-note').value.trim();
+          const target = document.getElementById('b-target').value;
+
+          // Basic validation
+          if(!name || !phoneValue){
+            status.style.color = 'var(--danger)';
+            status.textContent = 'Please provide your name and phone number.';
+            return;
+          }
+          // Persist draft locally (so user doesn't lose it)
+          saveDraft({name, phoneValue, service, date, note, target});
+
+          // Build message
+          const msg = [
+            `Hello Charlann Tailors, I would like to book a fitting.`,
+            `Name: ${name}`,
+            `Phone: ${phoneValue}`,
+            `Service: ${service}`,
+            `Date: ${date || 'Flexible'}`,
+            `Notes: ${note || '-'}`,
+            ``,
+            `Thanks!`
+          ].join('%0A');
+
+          // Open WhatsApp chat (target chosen by client)
+          const waUrl = `https://wa.me/${encodeURIComponent(target)}?text=${msg}`;
+          // open in new tab
+          window.open(waUrl, '_blank');
+
+          // Provide quick local feedback
+          status.style.color = 'var(--success)';
+          status.textContent = 'WhatsApp window opened. Press send to complete your booking. We will reply shortly.';
+        });
+
+        function updatePreviewLink(){
+          const n = document.getElementById('b-name').value.trim() || 'Guest';
+          const p = document.getElementById('b-phone').value.trim() || 'Not provided';
+          const s = document.getElementById('b-service').value || 'Service';
+          const d = document.getElementById('b-date').value || 'Flexible';
+          const no = document.getElementById('b-note').value.trim() || '-';
+          const t = document.getElementById('b-target').value || '254723814911';
+
+          const msg = [
+            `Hello Charlann Tailors, I would like to book a fitting.`,
+            `Name: ${n}`,
+            `Phone: ${p}`,
+            `Service: ${s}`,
+            `Date: ${d}`,
+            `Notes: ${no}`,
+            ``,
+            `Thanks!`
+          ].join('%0A');
+
+          // Set preview link
+          whatsappLink.href = `https://wa.me/${encodeURIComponent(t)}?text=${msg}`;
+        }
+      }
+
+      /**********************************************************************
+       * Pre-fill booking function (used by price cards)
+       **********************************************************************/
+      window.prefillBooking = function(text){
+        // find controls and set service
+        const srv = document.getElementById('b-service');
+        if(srv){
+          // add new option if not exists
+          let found = Array.from(srv.options).some(o => o.value === text);
+          if(!found){
+            let opt = document.createElement('option');
+            opt.value = text;
+            opt.textContent = text;
+            srv.appendChild(opt);
+          }
+          srv.value = text;
+        }
+        // scroll to booking
+        document.getElementById('booking').scrollIntoView({behavior:'smooth', block:'start'});
+        setTimeout(()=> {
+          const name = document.getElementById('b-name');
+          if(name) name.focus();
+        }, 400);
+      }
+
+      /**********************************************************************
+       * FAQ toggle (simple accordion)
+       **********************************************************************/
+      function initFAQ(){
+        const items = document.querySelectorAll('.faq-item');
+        items.forEach(item=>{
+          const q = item.querySelector('.faq-question');
+          const a = item.querySelector('.faq-answer');
+          if(q && a){
+            // ensure hidden initially
+            a.style.display = 'none';
+          }
+        });
+      }
+      window.toggleFAQ = function(el){
+        const answer = el.nextElementSibling;
+        const expanded = el.getAttribute('aria-expanded') === 'true';
+        el.setAttribute('aria-expanded', !expanded);
+        if(answer){
+          if(!expanded){
+            answer.style.display = 'block';
+          } else {
+            answer.style.display = 'none';
+          }
+        }
+      }
+
+      /**********************************************************************
+       * Local storage: save/restore drafts so user doesn't lose form data
+       **********************************************************************/
+      function saveDraft(obj){
+        try{
+          localStorage.setItem('ct_booking_draft', JSON.stringify(obj));
+        }catch(e){}
+      }
+      function restoreDraft(){
+        try{
+          const raw = localStorage.getItem('ct_booking_draft');
+          if(!raw) return;
+          const data = JSON.parse(raw);
+          if(data.name) document.getElementById('b-name').value = data.name;
+          if(data.phoneValue) document.getElementById('b-phone').value = data.phoneValue;
+          if(data.service) document.getElementById('b-service').value = data.service;
+          if(data.date) document.getElementById('b-date').value = data.date;
+          if(data.note) document.getElementById('b-note').value = data.note;
+          if(data.target) document.getElementById('b-target').value = data.target;
+          // update preview (if any)
+          const evt = new Event('input');
+          ['b-name','b-phone','b-service','b-date','b-note','b-target'].forEach(id=>{
+            const el = document.getElementById(id);
+            if(el) el.dispatchEvent(evt);
+          });
+        }catch(e){}
+      }
+
+      /**********************************************************************
+       * Tiny section animation (fade-in)
+       **********************************************************************/
+      function fadeInSections(){
+        const els = document.querySelectorAll('section.site-section, .hero-card');
+        els.forEach((el, i)=>{
+          el.style.opacity = 0;
+          el.style.transform = 'translateY(10px)';
+          setTimeout(()=> {
+            el.style.transition = 'opacity .6s ease, transform .6s ease';
+            el.style.opacity = 1;
+            el.style.transform = 'translateY(0)';
+          }, 140 + i*70);
+        });
+      }
+
+      /**********************************************************************
+       * Accessibility: skip links (optional small helper)
+       **********************************************************************/
+      // Add a simple keyboard shortcut to jump to booking (b key)
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'b' || e.key === 'B'){
+          const el = document.getElementById('booking');
+          if(el) el.scrollIntoView({behavior:'smooth'});
+        }
+      });
+
+      /**********************************************************************
+       * Analytics stub (non-personalized)
+       **********************************************************************/
+      window.CT_analytics = {
+        track: function(event, data){
+          // placeholder for analytics integration e.g., Google Analytics or custom
+          // console.log('CT_analytics', event, data);
+          return true;
+        }
+      };
+
+      // Expose small API for debugging in console
+      window.CharT = {
+        openLightbox, closeLightbox, prefillBooking
+      };
+
+    })();
+  </script>
+
+  <!-- End of file -->
+</body>
+</html>
